@@ -1,9 +1,9 @@
 {
-  "run_id": "E-swarm-20261118-674a",
+  "run_id": "E-swarm-20261118-b9d2",
   "shape": "swarm",
   "manifest": {
     "eval_set": "data/eval/eval_set_v1.jsonl",
-    "eval_set_sha": "674ab3a272a2",
+    "eval_set_sha": "b9d2f575c51f",
     "items": 14,
     "seeds": [
       11,

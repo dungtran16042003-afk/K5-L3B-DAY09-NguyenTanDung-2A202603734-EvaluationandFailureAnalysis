@@ -14,7 +14,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-674a` (report `eval_seeded_regression.json`) |
+| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-b9d2` (report `eval_seeded_regression.json`) |
 | Triệu chứng | lab8 grader FAIL `status resolved != denied`. Reply "Đã, LogiX đã hoàn 20.000đ cho đơn O-202." nhưng ledger ghi `refund_vnd=20000, refund_count=1` — nhãn yêu cầu denied, 0đ (C-002 trễ 2 ngày < 3 ngày điều kiện clause) |
 | Bước sai đầu tiên | Event 3 `model_override {"delay_days": 5}` — đặt lại delay DB=2 bằng số 5 trong ticket |
 | Vì sao là bước *đầu tiên* | Event 1 handoff đúng, event 2 investigator trả đúng `delay_days: 2` của DB; chỉ từ event 3 dữ liệu fact bị ghi đè, dẫn đến quote 20.000đ (event 4) và hoàn tiền sai |
