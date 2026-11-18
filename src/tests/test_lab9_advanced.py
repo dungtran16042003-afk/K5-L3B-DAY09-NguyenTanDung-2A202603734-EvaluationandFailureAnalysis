@@ -74,3 +74,61 @@ def test_slice_check_blocks_a_slice_below_floor():
     spec = dict(SPEC, slices=[{"name": "denial", "metric": "pass_rate", "min": 0.9, "blocking": True}])
     blocked, _ = gate.slice_check(_report(rows, {"pass_rate": 0.75}), base, spec)
     assert blocked == ["slice:denial/pass_rate"]
+
+
+FULL_SPEC = {
+    "eval_set_version": "v2",
+    "metrics": [
+        {"id": "pass_rate", "kind": "capability", "blocking": True, "threshold": {"min": 0.8, "no_significant_drop": True}},
+        {"id": "db_fact_kept", "kind": "capability", "blocking": False, "threshold": {"min": 0.9}},
+    ],
+    "slices": [{"name": "denial", "metric": "pass_rate", "min": 0.9, "blocking": True}],
+}
+
+
+def _mut(fn):
+    spec = copy.deepcopy(FULL_SPEC)
+    fn(spec)
+    return spec
+
+
+@pytest.mark.parametrize("mutate", [
+    lambda s: s["metrics"][0].update(blocking=False),
+    lambda s: s["metrics"].pop(0),
+    lambda s: s["metrics"][0]["threshold"].pop("min"),
+    lambda s: s["metrics"][0]["threshold"].pop("no_significant_drop"),
+    lambda s: s["slices"][0].update(blocking=False),
+    lambda s: s["slices"][0].pop("min"),
+    lambda s: s["slices"].clear(),
+])
+def test_ratchet_catches_every_loosening(mutate):
+    from lab9 import gate
+
+    base = _report(copy.deepcopy(ROWS), {"pass_rate": 1.0})
+    assert gate.integrity_check(base, base, _mut(mutate), FULL_SPEC)
+
+
+def test_ratchet_allows_tightening():
+    from lab9 import gate
+
+    base = _report(copy.deepcopy(ROWS), {"pass_rate": 1.0})
+    tight = _mut(lambda s: (s["metrics"][1].update(blocking=True), s["metrics"][0]["threshold"].update(min=0.9)))
+    assert gate.integrity_check(base, base, tight, FULL_SPEC) == []
+
+
+def test_integrity_flags_missing_evaluator_failures_key():
+    from lab9 import gate
+
+    base = _report(copy.deepcopy(ROWS), {"pass_rate": 1.0})
+    broken = copy.deepcopy(base)
+    del broken["evaluator_failures"]
+    assert gate.integrity_check(broken, base, SPEC)
+
+
+def test_pass_k_rejects_negative_and_zero():
+    from lab9 import stats
+
+    for f in (stats.pass_at_k, stats.pass_hat_k):
+        for args in [(5, -1, 2), (5, 2, 0), (0, 0, 1), (5, 6, 1)]:
+            with pytest.raises(ValueError):
+                f(*args)
