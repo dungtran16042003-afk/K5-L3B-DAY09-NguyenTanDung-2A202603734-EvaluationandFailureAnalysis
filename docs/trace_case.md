@@ -20,7 +20,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 | Vì sao là bước *đầu tiên* | Event 1 handoff đúng, event 2 investigator trả đúng `delay_days: 2` của DB; chỉ từ event 3 dữ liệu fact bị ghi đè, dẫn đến quote 20.000đ (event 4) và hoàn tiền sai |
 | Failure mode | FM-03 (ticket_trust — tin ticket hơn DB) |
 | Đối chứng | `fixed C-002@11`: không có event `model_override`; event 3 quote `amount_vnd: 0, reason: no_entitlement` → denied đúng nhãn |
-| Regression test | Grader `DbFactKept` (bắt event `model_override`) + metric `pass_rate`: FAIL trên `seeded_regression` (pass_rate 0.7143), PASS trên `fixed` (1.0); gate exit 1 với `pass_rate` Δ −0.271 CI [−0.500, −0.057] |
+| Regression test | `tests/test_lab9_trace_regression.py::test_seeded_c002_fails_at_ticket_override_fixed_passes` (chạy thật 2 shape: event 3 `model_override`, ledger 20.000 ≠ 0) + grader `DbFactKept` (bắt event `model_override`) + metric `pass_rate`: FAIL trên `seeded_regression` (pass_rate 0.7143), PASS trên `fixed` (1.0); gate exit 1 với `pass_rate` Δ −0.271 CI [−0.500, −0.057] |
 | Chưa chắc chắn | Trace không chứng minh vì sao LLM tin ticket (MockLLM): chỉ thấy hành vi ghi đè, không thấy "lý do" nội tại |
 
 ## Case 2 — `seeded_regression C-014@11` (FM-05 pre_deducted + FM-08 misreport)

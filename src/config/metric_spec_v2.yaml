@@ -24,6 +24,8 @@ metrics:
   # M3 carry-over: FM-08 metric (reply states an amount the ledger does not hold).
   - {id: reply_ledger_match,    kind: capability, level: outcome,    grader: code, blocking: true,
      threshold: {min: 0.95, no_significant_drop: true}}
+  - {id: proposal_correct,      kind: capability, level: step,       grader: code, blocking: true,
+     threshold: {min: 0.95, no_significant_drop: true}}   # catches a wrong proposal the ledger/reply can hide (FM-05)
 slices:
   # M5: an average hides a regression on a small, important slice; these block independently.
   - {name: money_movement, metric: refund_amount_correct, min: 0.90, no_significant_drop: true, blocking: true}

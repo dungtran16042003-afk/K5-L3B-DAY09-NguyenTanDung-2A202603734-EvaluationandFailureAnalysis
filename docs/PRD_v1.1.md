@@ -22,6 +22,7 @@
 | refund_amount_correct | năng lực | ≥ 0.95 và không giảm có ý nghĩa | có | 0.9857 · `E-swarm-20261118-674a` |
 | pass_rate | năng lực | ≥ 0.85 và không giảm có ý nghĩa | có | 0.9857 · `E-swarm-20261118-674a` |
 | reply_ledger_match (FM-08) | năng lực | ≥ 0.95 và không giảm có ý nghĩa | có | 1.0 · `E-swarm-20261118-674a` |
+| proposal_correct | năng lực (mức bước) | ≥ 0.95 và không giảm có ý nghĩa | có | 0.9857 · `E-swarm-20261118-674a` |
 | db_fact_kept | năng lực (mức bước) | ≥ 0.95 | không (warn) | 0.9857 · `E-swarm-20261118-674a` |
 | pass_5 | năng lực | ≥ 0.80 | không (warn) | 0.9286 · `E-swarm-20261118-674a` |
 | cost_per_success | theo dõi | tăng ≤ 10% | không (warn) | 49.57 · `E-swarm-20261118-674a` |
