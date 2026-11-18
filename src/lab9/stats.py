@@ -69,13 +69,22 @@ def paired_bootstrap(a: Sequence[float], b: Sequence[float], *, n_resamples: int
             float(res.confidence_interval.high))
 
 
+def _check_nck(n: int, c: int, k: int) -> None:
+    """Reject impossible (n trials, c passing, k drawn) triples instead of returning nonsense."""
+    if n < 1 or k < 1 or c < 0:
+        raise ValueError(f"need n>=1, k>=1, c>=0 (got n={n}, c={c}, k={k})")
+    if c > n:
+        raise ValueError(f"c={c} > n={n}")
+    if k > n:
+        raise ValueError(f"k={k} > n={n}")
+
+
 def pass_at_k(n: int, c: int, k: int) -> float:
     """Probability that AT LEAST ONE of k trials drawn from n (c of them passing) passes.
     Unbiased estimator (Chen et al. 2021): 1 - C(n-c, k) / C(n, k). Raise ValueError if k > n."""
     from math import comb
 
-    if k > n:
-        raise ValueError(f"k={k} > n={n}")
+    _check_nck(n, c, k)
     return 1.0 - comb(n - c, k) / comb(n, k)
 
 
@@ -85,6 +94,5 @@ def pass_hat_k(n: int, c: int, k: int) -> float:
     pass^k <= pass@1 <= pass@k; a reliable agent keeps pass^k close to pass@1."""
     from math import comb
 
-    if k > n:
-        raise ValueError(f"k={k} > n={n}")
+    _check_nck(n, c, k)
     return comb(c, k) / comb(n, k)
