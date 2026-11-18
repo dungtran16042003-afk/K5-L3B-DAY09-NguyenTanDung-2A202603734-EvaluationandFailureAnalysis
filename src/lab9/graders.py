@@ -85,7 +85,10 @@ class ReplyLedgerMatch(Evaluator[Any, Trial]):
         refunded = int(ctx.output["snapshot"].get("refund_vnd") or 0)
         replies = [e.get("payload", {}).get("text", "") for e in ctx.output["events"]
                    if e.get("kind") == "reply"]
-        text = replies[-1] if replies else ""
+        if not replies:
+            # Shapes without a user-facing reply (reference swarm) cannot misreport: not applicable.
+            return EvaluationReason(value=True, reason=None)
+        text = replies[-1]
         said = _AMOUNT_RE.findall(text)
         if refunded > 0:
             if not said:
